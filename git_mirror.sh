@@ -106,6 +106,10 @@ function git_mirror() {
 	# sync
 	echo $ git $p
 	git $p
+	if [ "$(basename $dir)" = 'automake' ]; then
+		git fast-import < ../automake-fix-tags.txt
+		git gc --quiet --prune=now
+	fi
 	echo $ git $m
 	git $m
 
