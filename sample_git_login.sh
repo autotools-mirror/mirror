@@ -5,3 +5,5 @@ org=mirror
 user=john-peterson
 pwd=myverysecretpassword
 REPO_HOME=~/mirrors
+
+gitlab_org=

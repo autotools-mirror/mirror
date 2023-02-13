@@ -90,8 +90,6 @@ function git_mirror() {
 		mkdir -p $dir; pushd $dir
 		echo $ git $c
 		git $c
-		echo $ git remote $r origin git@github.com:$org/$to.git
-		git remote $r origin git@github.com:$org/$to.git
 
 		# select branch
 		if $isbzr; then
@@ -106,12 +104,18 @@ function git_mirror() {
 	# sync
 	echo $ git $p
 	git $p
-	if [ "$(basename $dir)" = 'automake' ]; then
-		git fast-import < ../automake-fix-tags.txt
-		git gc --quiet --prune=now
-	fi
+
+	echo $ git remote $r origin git@github.com:$org/$to.git
+	git remote $r origin git@github.com:$org/$to.git
 	echo $ git $m
 	git $m
+
+	if [[ -n $gitlab_org ]]; then
+		echo $ git remote $r origin git@gitlab.com:$gitlab_org/$to.git
+		git remote $r origin git@gitlab.com:$gitlab_org/$to.git
+		echo $ git $m
+		git $m
+	fi
 
 	popd
 }
