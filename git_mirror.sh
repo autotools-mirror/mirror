@@ -85,37 +85,34 @@ function git_mirror() {
 		r='add'
 	fi
 
+	set -x
+
 	# clone
 	if [[ ! -d $dir || ! ($isgit && -f $dir/HEAD || !$isgit && -f $dir/.git/HEAD) ]]; then
 		mkdir -p $dir; pushd $dir
-		echo $ git $c
 		git $c
 
 		# select branch
 		if $isbzr; then
-			echo $ git checkout bzr/master
 			git checkout bzr/master
 		fi
+	else
+		pushd $dir
 	fi
 
-	# change directory
-	pushd $dir
-
 	# sync
-	echo $ git $p
 	git $p
 
-	echo $ git remote $r origin git@github.com:$org/$to.git
+	git gc --prune=now
+
 	git remote $r origin git@github.com:$org/$to.git
-	echo $ git $m
 	git $m
 
 	if [[ -n $gitlab_org ]]; then
-		echo $ git remote $r origin git@gitlab.com:$gitlab_org/$to.git
 		git remote $r origin git@gitlab.com:$gitlab_org/$to.git
-		echo $ git $m
 		git $m
 	fi
 
+	set +x
 	popd
 }
