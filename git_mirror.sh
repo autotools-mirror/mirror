@@ -7,7 +7,7 @@ function create_repo() {
 	description=$2
 
 	# create repo
-	json=$(curl -s -u "$user:$pwd" -d "{\"name\":\"$name\"}" https://api.github.com/orgs/$org/repos)
+	json=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $pat" -H "X-GitHub-Api-Version: 2022-11-28" -d "{\"name\":\"$name\"}" https://api.github.com/orgs/$org/repos)
 	error=$(echo "$json" | jshon -Q -e message -u)
 	if [ -n "$error" ]; then
 		echo $error;
@@ -15,7 +15,7 @@ function create_repo() {
 	fi
 
 	# set description
-	json=$(curl -s -u "$user:$pwd" -X PATCH -d "{\"name\":\"$name\", \"description\":\"$description\"}" https://api.github.com/repos/$org/$name)
+	json=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $pat" -H "X-GitHub-Api-Version: 2022-11-28" -X PATCH -d "{\"name\":\"$name\", \"description\":\"$description\"}" https://api.github.com/repos/$org/$name)
 }
 
 function git_mirror() {
@@ -38,7 +38,7 @@ function git_mirror() {
 	issvn=`if [[ "$type" =~ "svn" ]]; then printf true; else printf false; fi`
 
 	# create repo
-	json=$(curl -s https://api.github.com/repos/$org/$to)
+	json=$(curl -s -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/$org/$to)
 	error=$(echo "$json" | jshon -Q -e message -u)
 	if [ -n "$error" ] && [[ "$error" != "API rate limit exceeded"* ]]; then
 		echo $error;
